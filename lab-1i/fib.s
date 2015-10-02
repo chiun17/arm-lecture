@@ -13,30 +13,20 @@ fibonacci:
 	@ PROLOG
 	push {r3, r4, r5, lr}
 
-	@ R4 = R0 - 0 (update flags)
-	@ if(R0 <= 0) goto .L3 (which returns 0)
+    mov r2, r0        @ r2 = r0
+    mov r1, #-1       @ PREVIOUS = -1 
+    mov r0, #1        @ RESULT = 1
+    mov r3, #0        @ SUM = 0
 
-	@ Compare R4 wtih 1
-	@ If R4 == 1 goto .L4 (which returns 1)
+loop:
+    add r3, r0, r1    @ SUM = RESULT + PREVIOUS  
+    mov r1, r0        @ PREVIOUS = RESULT
+    mov r0, r3        @ RESULT = SUM
 
-	@ R0 = R4 - 1
-	@ Recursive call to fibonacci with R4 - 1 as parameter
+    sub r2, r2, #1    @ r2--
+    cmp r2, #-1       @ while(x!=-1) 
+    bne loop
 
-	@ R5 = R0
-	@ R0 = R4 - 2
-	@ Recursive call to fibonacci with R4 - 2 as parameter
-
-	@ R0 = R5 + R0 (update flags)
-
-	pop {r3, r4, r5, pc}		@EPILOG
-
-	@ END CODE MODIFICATION
-.L3:
-	mov r0, #0			@ R0 = 0
-	pop {r3, r4, r5, pc}		@ EPILOG
-
-.L4:
-	mov r0, #1			@ R0 = 1
 	pop {r3, r4, r5, pc}		@ EPILOG
 
 	.size fibonacci, .-fibonacci
